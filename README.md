@@ -166,47 +166,6 @@ git push
 
 目录建议 `26XX你名字/培训3/hsv_demo/`。
 
-**参考骨架**：
-
-```cpp
-#include <opencv2/opencv.hpp>
-using namespace cv;
-
-int main() {
-    Mat src = imread("armor.jpg");
-    if (src.empty()) { std::cerr << "图片读取失败\n"; return -1; }
-
-    Mat hsv;
-    cvtColor(src, hsv, COLOR_BGR2HSV);
-
-    // 分离三个通道
-    std::vector<Mat> ch;
-    split(hsv, ch);
-    imshow("H", ch[0]);
-    imshow("S", ch[1]);
-    imshow("V", ch[2]);
-
-    // 红色在 HSV 里跨了 0 度，要两个区间
-    Mat mask1, mask2, mask;
-    inRange(hsv, Scalar(0,   100, 60), Scalar(10,  255, 255), mask1);
-    inRange(hsv, Scalar(170, 100, 60), Scalar(180, 255, 255), mask2);
-    mask = mask1 | mask2;
-
-    imshow("red mask", mask);
-    imwrite("red_mask.png", mask);
-
-    waitKey(0);
-    return 0;
-}
-```
-
-**要点**：
-
-- **红色在 HSV 里不是一个连续区间**。H 是 0~180 的环，红色跨在 0 附近，所以区间是 `0~10` **和** `170~180` 两段，必须取并集（`mask1 | mask2`）。只写一段会漏掉一半。
-- `split` 出来的三个通道单独看都是一张灰度图，直接 `imshow` 就能看到。想更直观可以再 `applyColorMap` 上伪彩色（不强求）。
-- 阈值没有标准答案，**环境暗就调低 S/V 下限**。判断标准：`red_mask.png` 里红色灯条是白的、背景是黑的。
-- 记住 `imwrite` 的路径是相对**当前工作目录**的，跑完去那个目录看一眼文件到底生成没有。
-
 ### 任务 2 · 视频里识别灯条和装甲板
 
 **要求**：用群里发的视频，识别视频中装甲板的**灯条**和它的**四个角点**：
@@ -230,92 +189,8 @@ int main() {
 
 目录建议 `26XX你名字/培训3/detect_demo/`。
 
-**处理流程**：
-
-```
-读帧 → cvtColor 转 HSV → 红色阈值 inRange → 形态学去噪(opening/closing)
-     → findContours 找轮廓 → 按面积/长宽比筛出灯条
-     → minAreaRect 求最小外接矩形 → boxPoints 取 4 个角点 → 画框 + 画角点
-     → 配对左右两根灯条 → 合并 8 个角点求外接矩形 → 画大框
-```
-
-**参考骨架**：
-
-```cpp
-VideoCapture cap("armor.mp4");
-if (!cap.isOpened()) { std::cerr << "视频打开失败\n"; return -1; }
-
-Mat frame;
-while (cap.read(frame)) {
-    Mat hsv;
-    cvtColor(frame, hsv, COLOR_BGR2HSV);
-
-    Mat m1, m2, mask;
-    inRange(hsv, Scalar(0,   100, 60), Scalar(10,  255, 255), m1);
-    inRange(hsv, Scalar(170, 100, 60), Scalar(180, 255, 255), m2);
-    mask = m1 | m2;
-
-    // 形态学去噪
-    Mat k = getStructuringElement(MORPH_RECT, Size(3, 3));
-    morphologyEx(mask, mask, MORPH_OPEN, k);
-    morphologyEx(mask, mask, MORPH_CLOSE, k);
-
-    std::vector<std::vector<Point>> contours;
-    findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-
-    std::vector<RotatedRect> bars;
-    for (auto& c : contours) {
-        if (contourArea(c) < 50) continue;          // 太小的丢掉
-        RotatedRect rr = minAreaRect(c);
-        float w = rr.size.width, h = rr.size.height;
-        float ar = (w > h) ? w / h : h / w;         // 长宽比
-        if (ar < 2.0f) continue;                    // 灯条是细长的，长宽比大
-        bars.push_back(rr);
-    }
-
-    // 画每根灯条的矩形和四个角点
-    for (auto& rr : bars) {
-        Point2f pts[4];
-        rr.points(pts);                             // 取 4 个角点
-        for (int i = 0; i < 4; i++) {
-            line(frame, pts[i], pts[(i + 1) % 4], Scalar(0, 255, 255), 2);
-            circle(frame, pts[i], 4, Scalar(0, 255, 0), -1);
-        }
-    }
-
-    // 左右两根灯条合起来求外接矩形 = 装甲板的四个角点
-    if (bars.size() >= 2) {
-        // 按 x 排序取最左最右两根
-        sort(bars.begin(), bars.end(),
-             [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x; });
-        RotatedRect L = bars.front(), R = bars.back();
-
-        Point2f lp[4], rp[4];
-        L.points(lp); R.points(rp);
-
-        // 8 个点合成一个凸包，再求外接矩形
-        std::vector<Point2f> all(lp, lp + 4);
-        all.insert(all.end(), rp, rp + 4);
-        RotatedRect armor = minAreaRect(all);
-
-        Point2f ap[4];
-        armor.points(ap);
-        for (int i = 0; i < 4; i++)
-            line(frame, ap[i], ap[(i + 1) % 4], Scalar(0, 255, 255), 2);
-    }
-
-    imshow("detect", frame);
-    if (waitKey(1) == 27) break;                    // 按 ESC 退出
-}
-```
-
-**要点**：
-
-- **视频循环里用 `waitKey(1)`，不要用 `waitKey(0)`**。`waitKey(0)` 会无限等待按键，视频就卡在第一帧不动了。
-- 灯条的判断不能只看颜色，还要看**形状**：细长（长宽比大）、面积在合理区间。只靠颜色会把画面里所有红色的东西都当成灯条。
-- `minAreaRect` 返回的矩形是**带旋转角度**的，`points()` 拿到的 4 个角点顺序是固定的（左下、左上、右上、右下，随角度变化），所以**直接按顺序连线**就行，不要自己猜顺序，否则线会交叉。
-- 视频分辨率如果很大，先用 `namedWindow("detect", WINDOW_NORMAL)` 让窗口可以缩放，否则弹出来比屏幕还大。
-- 视频路径同样是**相对当前工作目录**的，在 `build/` 里运行会找不到文件。
+> 具体怎么做自己想：颜色怎么取、形状怎么筛、四个角点怎么连起来，都是这次要练的东西。
+> 卡住了先去看 [第八节的完整示例](#八完整示例管理者提供建议先看)。
 
 ### 培训3 交付物清单
 
