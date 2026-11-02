@@ -240,7 +240,7 @@ student.HPP       ❌ 和 #include "student.hpp" 对不上
 ### 4. 写死绝对路径 ❌
 
 ```cpp
-imread("/home/mao/gugugaga/26数计陈俊昊/培训2/opencv_demo/assets/test.png");  ❌
+imread("/home/mao/gugugaga/26电科温学姐/培训2/opencv_demo/assets/test.png");  ❌
 imread("C:/Users/xxx/Desktop/armor.jpg");                                    ❌
 imread("armor.jpg");                                                          ✅
 imread(argv[1]);                                                              ✅ 更灵活
