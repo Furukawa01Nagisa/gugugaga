@@ -4,9 +4,77 @@
 
 所有作业通过 **Fork + Pull Request（PR）** 的方式提交，**不要**直接往本仓库推代码。
 
+> 每次作业都会在这里更新要求，提交前**先把本文档从头看一遍**，尤其是「注意事项」那一节——上一轮踩过的坑，基本都在里面。
+
 ---
 
-## 一、提交流程（5 步）
+## 目录
+
+- [一、目录结构（最重要的规范）](#一目录结构最重要的规范)
+- [二、提交流程（5 步）](#二提交流程5-步)
+- [三、要上传什么 / 不要上传什么](#三要上传什么--不要上传什么)
+- [四、培训3 任务要求（本次作业）](#四培训3-任务要求本次作业)
+- [五、注意事项（上一轮踩过的坑，务必看完）](#五注意事项上一轮踩过的坑务必看完)
+- [六、常见报错与解决](#六常见报错与解决)
+- [七、有问题](#七有问题)
+
+---
+
+## 一、目录结构（最重要的规范）
+
+每个人**只有一个**文件夹，命名规则：**年级 + 专业 + 姓名**（用中文），例如：
+
+```
+26电科张三/
+```
+
+⚠️ **文件夹名必须是中文，不要用拼音、不要用下划线、不要加空格**。
+`26_dianke_zhangsan` ❌ `26电科张三` ✅
+
+额外的名字（比如「26机器人」「26计科」「26食质」）按你专业实际写就行，前面两位是入学年份。
+
+所有作业按下面的结构放：
+
+```
+仓库根目录/
+├── README.md                     ← 本文件，不要改
+├── .gitignore                    ← 不要改
+│
+├── 26电科张三/                    ← 你的文件夹
+│   ├── 培训2/
+│   │   ├── student_demo/         ← 工程 1
+│   │   │   ├── CMakeLists.txt
+│   │   │   ├── README.md         ← 你自己的说明（建议写）
+│   │   │   ├── includes/
+│   │   │   │   └── student.hpp
+│   │   │   ├── tools/
+│   │   │   │   └── student.cpp
+│   │   │   └── src/
+│   │   │       └── main.cpp
+│   │   └── opencv_demo/          ← 工程 2
+│   │       ├── CMakeLists.txt
+│   │       ├── main.cpp
+│   │       └── test.jpg          ← 测试图片必须一起提交
+│   └── 培训3/
+│       ├── hsv_demo/             ← 任务 1
+│       │   ├── CMakeLists.txt
+│       │   ├── main.cpp
+│       │   └── armor.jpg         ← 装甲板图片
+│       └── detect_demo/          ← 任务 2
+│           ├── CMakeLists.txt
+│           ├── main.cpp
+│           └── armor.mp4         ← 测试视频（见注意事项里的大小限制）
+│
+└── 26机器人李四/                  ← 别人的文件夹
+```
+
+**一句话记住：`你的名字/培训N/工程名/`，三层，工程的源代码再往下放。**
+
+上一轮有人把 `student_demo/` 直接放在仓库根目录，结果和别人的路径撞在一起、也没法一眼看出是谁交的——不要在根目录建任何文件夹。
+
+---
+
+## 二、提交流程（5 步）
 
 ### 第 1 步：Fork 本仓库
 
@@ -14,50 +82,33 @@
 
 完成后你会有一份自己的副本：`https://github.com/你的用户名/gugugaga`
 
-### 第 2 步：把你自己的副本 clone 到本地
+### 第 2 步：clone 你自己的副本
 
-> ⚠️ 注意地址是**你自己的用户名**，不是组织的。
+> ⚠️ 地址里必须是**你自己的用户名**，不是组织的。
 
 ```bash
 git clone https://github.com/你的用户名/gugugaga.git
 cd gugugaga
 ```
 
-### 第 3 步：创建你的作业文件夹
-
-在仓库根目录建一个文件夹，命名规则：**年级 + 专业 + 姓名**，例如：
-
-```
-26电科张三/
-```
-
-以后每次作业都放在这个文件夹里，按作业名再分子文件夹：
-
-```
-26电科张三/
-  ├── 培训2/
-  │   ├── student_demo/
-  │   └── opencv_demo/
-  └── 培训3/
-      └── ...
-```
+### 第 3 步：按上面的目录结构建文件夹、放代码
 
 ### 第 4 步：提交并推送
 
 ```bash
 git add .
-git commit -m "培训2 - 26电科张三"
+git commit -m "培训3 - 26电科张三"
 git push
 ```
 
 第一次 push 会让你登录 GitHub，按提示走就行。
 
-### 第 5 步：提 PR
+### 第 5 步：在网页上提 PR
 
 回到网页 `https://github.com/你的用户名/gugugaga`，会看到 **Contribute** / **Compare & pull request** 的黄色按钮，点它：
 
-- 标题写：`培训2 - 26电科张三`
-- 说明里写清楚：做了什么、怎么编译、运行结果（可以贴截图）
+- 标题写：`培训3 - 26电科张三`
+- 说明里写清楚：做了什么、怎么编译、运行结果（贴截图）
 - 点 **Create pull request**
 
 到这里就提交完成了。
@@ -66,60 +117,422 @@ git push
 
 ---
 
-## 二、本次作业要求（培训2）
-
-1. **student_demo** —— 实现 `Student` 类（存储学生信息、打印信息、修改成绩），代码分文件组织（头文件 / 源文件 / main），用 CMake 构建，并打包成静态库后链接使用。
-2. **opencv_demo** —— `main.cpp` 用 OpenCV 读取并显示一张图片，用 CMake 管理工程，用 `find_package` 查找并链接 OpenCV。
-
-两个任务都**必须用命令行编译运行**（不要只点 IDE 的运行按钮），编译成功后把代码上传到这里。
-
-> 具体题目以群里发布的《培训2》文档为准。
-
----
-
 ## 三、要上传什么 / 不要上传什么
 
-### 要上传
+### ✅ 要上传
 
 - 源代码（`.cpp` / `.hpp` / `.h`）
 - `CMakeLists.txt`
-- 一份简短的 `README.md`：说明怎么编译、怎么运行、以及运行结果截图（可选但强烈建议）
+- **测试用的图片 / 视频**（不传的话别人拉下来一律跑不起来）
+- 一份简短的 `README.md`：说明怎么编译、怎么运行（可选但强烈建议）
+- 运行结果的截图（可以放在你自己的 `README.md` 里，也可以单独放）
 
-### 不要上传
+### ❌ 不要上传
 
 - `build/` 之类的编译产物目录
-- `.exe` / `.o` / `.a` / `.so` 等二进制文件
+- `.exe` / `.o` / `.a` / `.so` / `a.out` 等二进制文件（编译出来的可执行文件**不要**提交）
 - `.vscode/`、`.idea/` 等本地 IDE 配置
-- OpenCV、第三方库的源码
+- OpenCV 等第三方库的源码
 - 压缩包（`.zip` / `.rar` / `.7z`）
+- **对根目录 `README.md` 和 `.gitignore` 的修改**
 
 仓库根目录已经放了 `.gitignore`，上面这些会自动被忽略。
 
-万一还是传上去了也没关系：在 PR 里说一声，或者自己删掉再 push 一次。
+万一还是传上去了也没关系：在 PR 里说一声，或者自己删掉再 push 一次（`git rm -r --cached build`）。
 
 ---
 
-## 四、常见问题
+## 四、培训3 任务要求（本次作业）
+
+### 前置学习
+
+继续把 OpenCV 没学的学完：
+
+> 【【中文配音】OpenCV C++从零实战：4小时掌握计算机视觉图像处理+3大项目（虚拟画师、文档检测、车牌识别）】
+> <https://www.bilibili.com/video/BV1N2Vr6FERw?p=6>
+
+### 任务 1 · HSV 通道分离 + 红色掩膜
+
+**要求**：
+
+1. 读取装甲板图片；
+2. 转成 HSV；
+3. 分离 H、S、V 三个通道，**分别弹出三个窗口**展示；
+4. 写阈值，用 `inRange` 提取**红色装甲**的二值掩膜；
+5. 把掩膜保存为 `red_mask.png`。
+
+目录建议 `26XX你名字/培训3/hsv_demo/`。
+
+**参考骨架**：
+
+```cpp
+#include <opencv2/opencv.hpp>
+using namespace cv;
+
+int main() {
+    Mat src = imread("armor.jpg");
+    if (src.empty()) { std::cerr << "图片读取失败\n"; return -1; }
+
+    Mat hsv;
+    cvtColor(src, hsv, COLOR_BGR2HSV);
+
+    // 分离三个通道
+    std::vector<Mat> ch;
+    split(hsv, ch);
+    imshow("H", ch[0]);
+    imshow("S", ch[1]);
+    imshow("V", ch[2]);
+
+    // 红色在 HSV 里跨了 0 度，要两个区间
+    Mat mask1, mask2, mask;
+    inRange(hsv, Scalar(0,   100, 60), Scalar(10,  255, 255), mask1);
+    inRange(hsv, Scalar(170, 100, 60), Scalar(180, 255, 255), mask2);
+    mask = mask1 | mask2;
+
+    imshow("red mask", mask);
+    imwrite("red_mask.png", mask);
+
+    waitKey(0);
+    return 0;
+}
+```
+
+**要点**：
+
+- **红色在 HSV 里不是一个连续区间**。H 是 0~180 的环，红色跨在 0 附近，所以区间是 `0~10` **和** `170~180` 两段，必须取并集（`mask1 | mask2`）。只写一段会漏掉一半。
+- `split` 出来的三个通道单独看都是一张灰度图，直接 `imshow` 就能看到。想更直观可以再 `applyColorMap` 上伪彩色（不强求）。
+- 阈值没有标准答案，**环境暗就调低 S/V 下限**。判断标准：`red_mask.png` 里红色灯条是白的、背景是黑的。
+- 记住 `imwrite` 的路径是相对**当前工作目录**的，跑完去那个目录看一眼文件到底生成没有。
+
+### 任务 2 · 视频里识别灯条和装甲板
+
+**要求**：用群里发的视频，识别视频中装甲板的**灯条**和它的**四个角点**：
+
+1. 用**最大外接矩形**（`minAreaRect`）框住灯条；
+2. 在图像上**显示灯条的四个角点**；
+3. **连接装甲板的四个角点**，把整个装甲板框出来。
+
+目标效果（文档里的手绘图）：
+
+```
+   ┌───────────────┬──────────────┬───────────────┐
+   │  ┌──┐         │              │         ┌──┐  │
+   │  │  │  ← 左灯条 │   装甲板「3」  │  右灯条 → │  │  │
+   │  └──┘         │              │         └──┘  │
+   └───────────────┴──────────────┴───────────────┘
+      ↑ 分别用最小外接矩形框住两根灯条，再把最外圈连起来
+```
+
+也就是：**两个细长的小框 + 一个包住整体的大框**，每个框的 4 个角点都标出来。
+
+目录建议 `26XX你名字/培训3/detect_demo/`。
+
+**处理流程**：
+
+```
+读帧 → cvtColor 转 HSV → 红色阈值 inRange → 形态学去噪(opening/closing)
+     → findContours 找轮廓 → 按面积/长宽比筛出灯条
+     → minAreaRect 求最小外接矩形 → boxPoints 取 4 个角点 → 画框 + 画角点
+     → 配对左右两根灯条 → 合并 8 个角点求外接矩形 → 画大框
+```
+
+**参考骨架**：
+
+```cpp
+VideoCapture cap("armor.mp4");
+if (!cap.isOpened()) { std::cerr << "视频打开失败\n"; return -1; }
+
+Mat frame;
+while (cap.read(frame)) {
+    Mat hsv;
+    cvtColor(frame, hsv, COLOR_BGR2HSV);
+
+    Mat m1, m2, mask;
+    inRange(hsv, Scalar(0,   100, 60), Scalar(10,  255, 255), m1);
+    inRange(hsv, Scalar(170, 100, 60), Scalar(180, 255, 255), m2);
+    mask = m1 | m2;
+
+    // 形态学去噪
+    Mat k = getStructuringElement(MORPH_RECT, Size(3, 3));
+    morphologyEx(mask, mask, MORPH_OPEN, k);
+    morphologyEx(mask, mask, MORPH_CLOSE, k);
+
+    std::vector<std::vector<Point>> contours;
+    findContours(mask, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+    std::vector<RotatedRect> bars;
+    for (auto& c : contours) {
+        if (contourArea(c) < 50) continue;          // 太小的丢掉
+        RotatedRect rr = minAreaRect(c);
+        float w = rr.size.width, h = rr.size.height;
+        float ar = (w > h) ? w / h : h / w;         // 长宽比
+        if (ar < 2.0f) continue;                    // 灯条是细长的，长宽比大
+        bars.push_back(rr);
+    }
+
+    // 画每根灯条的矩形和四个角点
+    for (auto& rr : bars) {
+        Point2f pts[4];
+        rr.points(pts);                             // 取 4 个角点
+        for (int i = 0; i < 4; i++) {
+            line(frame, pts[i], pts[(i + 1) % 4], Scalar(0, 255, 255), 2);
+            circle(frame, pts[i], 4, Scalar(0, 255, 0), -1);
+        }
+    }
+
+    // 左右两根灯条合起来求外接矩形 = 装甲板的四个角点
+    if (bars.size() >= 2) {
+        // 按 x 排序取最左最右两根
+        sort(bars.begin(), bars.end(),
+             [](const RotatedRect& a, const RotatedRect& b) { return a.center.x < b.center.x; });
+        RotatedRect L = bars.front(), R = bars.back();
+
+        Point2f lp[4], rp[4];
+        L.points(lp); R.points(rp);
+
+        // 8 个点合成一个凸包，再求外接矩形
+        std::vector<Point2f> all(lp, lp + 4);
+        all.insert(all.end(), rp, rp + 4);
+        RotatedRect armor = minAreaRect(all);
+
+        Point2f ap[4];
+        armor.points(ap);
+        for (int i = 0; i < 4; i++)
+            line(frame, ap[i], ap[(i + 1) % 4], Scalar(0, 255, 255), 2);
+    }
+
+    imshow("detect", frame);
+    if (waitKey(1) == 27) break;                    // 按 ESC 退出
+}
+```
+
+**要点**：
+
+- **视频循环里用 `waitKey(1)`，不要用 `waitKey(0)`**。`waitKey(0)` 会无限等待按键，视频就卡在第一帧不动了。
+- 灯条的判断不能只看颜色，还要看**形状**：细长（长宽比大）、面积在合理区间。只靠颜色会把画面里所有红色的东西都当成灯条。
+- `minAreaRect` 返回的矩形是**带旋转角度**的，`points()` 拿到的 4 个角点顺序是固定的（左下、左上、右上、右下，随角度变化），所以**直接按顺序连线**就行，不要自己猜顺序，否则线会交叉。
+- 视频分辨率如果很大，先用 `namedWindow("detect", WINDOW_NORMAL)` 让窗口可以缩放，否则弹出来比屏幕还大。
+- 视频路径同样是**相对当前工作目录**的，在 `build/` 里运行会找不到文件。
+
+### 培训3 交付物清单
+
+- [ ] 任务 1 的代码（能弹 H / S / V 三个窗口 + 红色掩膜窗口）
+- [ ] `red_mask.png`（掩膜文件本身也要提交）
+- [ ] 任务 2 的代码（能跑通视频，画出灯条框 + 角点 + 装甲板大框）
+- [ ] **运行效果的照片**（截图放进你自己的 `README.md` 或 `shots/` 目录）
+- [ ] **运行效果的视频**（注意下面的大小限制）
+- [ ] 两个工程的 `CMakeLists.txt`
+- [ ] 测试用的图片和视频（`armor.jpg` / `armor.mp4`）
+
+---
+
+## 五、注意事项（上一轮踩过的坑，务必看完）
+
+下面每一条都来自上一轮真实提交里出现的问题，**按出错人数从多到少排**：
+
+### 1. 目录结构错 ❌ 最常见
+
+- 直接放根目录：`opencv_demo/` 放在仓库根 ❌
+- 缺「培训N」这一层：`26电科张三/student_demo/` ❌
+- 用拼音：`26_dianke_zhangsan/peixun2/` ❌
+- 把 `tools/`、`src/` 塞进 `includes/` 里 ❌（`includes/` 只放头文件）
+
+✅ 正确：`26电科张三/培训3/hsv_demo/{CMakeLists.txt, main.cpp, armor.jpg}`
+
+### 2. 文件名大小写 ❌
+
+Linux **区分大小写**，Windows 不区分。这个坑非常隐蔽：
+
+```
+CmakeLists.txt    ❌ 在 Windows 上能编过，到 Ubuntu 上直接报
+                     "The source directory does not appear to contain CMakeLists.txt"
+cmakelists.txt    ❌ 同上
+CMakeLists.txt    ✅ 只认这一个拼写
+student.HPP       ❌ 和 #include "student.hpp" 对不上
+```
+
+同理：你在 Windows 上写的 `#include <Student.hpp>`，如果实际文件名是 `student.hpp`，到 Linux 上就找不到。
+
+### 3. 测试图片 / 视频没提交 ❌
+
+`imread("test.jpg")` 但仓库里没有 `test.jpg` → 别人拉下来能编过，**一运行就 `return -1`，窗口不弹**。
+
+上一轮有同学就是这样：代码完全正确，但评审时跑不起来，只能打回重交。
+
+### 4. 写死绝对路径 ❌
+
+```cpp
+imread("/home/mao/gugugaga/26数计陈俊昊/培训2/opencv_demo/assets/test.png");  ❌
+imread("C:/Users/xxx/Desktop/armor.jpg");                                    ❌
+imread("armor.jpg");                                                          ✅
+imread(argv[1]);                                                              ✅ 更灵活
+```
+
+路径只在你自己的电脑上存在，别人一律跑不了。
+
+### 5. 把 `build/`、可执行文件传上去了 ❌
+
+上一轮有人把整个 `build/` 目录（20 多个文件，含 `CMakeCache.txt`、`.o`、`a.out`）提交了。这些东西：
+
+- 换台机器就是废文件，还可能让别人的 CMake 报 `CMakeCache.txt directory ... is different`
+- 会把仓库搞得很臃肿
+
+删掉已经提交的文件：
+
+```bash
+git rm -r --cached build
+echo "build/" >> .gitignore
+git commit -m "移除构建产物"
+git push
+```
+
+### 6. 改了根目录的 `README.md` / `.gitignore` ❌
+
+这两个文件是**全仓库共用**的。十几个人同时改它，合并时必然冲突。
+
+你自己的忽略规则，放到自己的文件夹里（比如 `26电科张三/.gitignore`）。
+
+### 7. 视频太大 ❌（培训3 新增）
+
+**GitHub 的硬限制：单个文件超过 100 MB 直接拒绝；超过 50 MB 会警告。**
+
+手机拍的视频很容易就上百 MB。三个办法，任选其一：
+
+1. **截取关键片段**：只保留能看出效果的 10~20 秒，用剪辑软件导出（推荐，最省事）；
+2. **压缩**：分辨率降到 720p，码率调低，一般能压到 10 MB 以内；
+3. **放网盘贴链接**：视频传到 B站 / 百度网盘 / 阿里云盘，在你自己的 `README.md` 里贴链接。
+
+> 直接传原视频 → push 被拒 → 视频卡在本地 → PR 一直不完整，这个情况上一轮已经出现过。
+
+### 8. `using namespace std;` 放头文件里 ❌
+
+```cpp
+// student.hpp
+using namespace std;      ❌ 会污染所有 include 它的文件
+std::string name;         ✅ 头文件里写全 std::
+```
+
+`.cpp` 里用 `using namespace std;` 可以接受；头文件里不行。
+
+### 9. 头文件里 `std::string` 漏写 `std::` ❌
+
+```cpp
+class Student {
+public:
+    Student(string name, int score);   ❌ string 找不到（头文件里没有 using namespace std）
+    Student(std::string name, int score);  ✅
+};
+```
+
+上面第 8 条和这条经常一起出现：有人把 `using namespace std;` 删了，但忘了给 `string` 补 `std::`，结果就编不过。
+
+### 10. CMake 的几处小毛病
+
+```cmake
+target_link_libraries(main ${OpenCV_LIBS})            ❌ 旧式签名
+target_link_libraries(main PRIVATE ${OpenCV_LIBS})    ✅
+
+include_directories(${OpenCV_INCLUDE_DIRS})           ⚠️ 全局生效，能用但不推荐
+target_include_directories(main PRIVATE ${OpenCV_INCLUDE_DIRS})   ✅
+
+set(CMAKE_CXX_STANDARD 11)                            ⚠️ 用 17
+
+find_package(OpenCV 4 REQUIRED)                       ❌ 绑死主版本，环境是 5.x 就找不到
+find_package(OpenCV REQUIRED)                         ✅ 不绑版本
+```
+
+> 上一轮有位同学把 `include_directories` 拼成了 `include_directiories`，CMake 直接报 `Unknown CMake command`，整个工程配置失败。**CMake 报这个错，99% 是函数名拼错了。**
+
+### 11. 学号 / 编号不要用 `int` ❌
+
+```cpp
+int id = 00261001;        ❌ 前导零丢失，甚至被当成八进制
+std::string id = "00261001";   ✅
+```
+
+### 12. 相对路径和「在哪个目录运行」
+
+```cpp
+imread("test.jpg");   // 相对的是「当前工作目录」，不是「源码所在目录」
+```
+
+- 在 `opencv_demo/` 里运行 → 找 `opencv_demo/test.jpg` ✅
+- 在 `build/` 里运行 → 找 `build/test.jpg` ❌
+
+两种解法：
+
+```cmake
+# 解法一：CMake 把图片拷到构建目录
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test.jpg DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+```
+
+```cpp
+// 解法二：支持命令行传路径
+std::string path = (argc > 1) ? argv[1] : "test.jpg";
+```
+
+### 13. 提交前自检清单
+
+复制走，一项一项对：
+
+- [ ] 目录是 `26XX专业姓名/培训3/工程名/`，全中文
+- [ ] 没有把文件夹建在仓库根目录
+- [ ] 所有 `CMakeLists.txt` 拼写完全正确（大写 C、大写 M、大写 L）
+- [ ] 测试图片 / 视频已经提交进仓库
+- [ ] `git status` 里没有 `build/`、`*.exe`、`.vscode/`
+- [ ] 没有改根目录的 `README.md` 和 `.gitignore`
+- [ ] 在**全新 clone** 的目录里能 `cmake -S . -B build && cmake --build build` 成功
+- [ ] 能通过命令行运行出结果（不是靠 IDE 的运行按钮）
+- [ ] PR 标题是 `培训3 - 26电科张三`
+- [ ] PR 描述里写了做了什么、怎么编译
+
+---
+
+## 六、常见报错与解决
 
 **Q：push 报 403 / `Permission denied`？**
 
 A：你 clone 的是组织的仓库（`ZT-Visual-Group-Training/gugugaga`）。组织仓库你没有写权限，要 clone **你自己 fork 出来的那份**（`你的用户名/gugugaga`）。
 
+**Q：`CMake Error: The source directory ... does not appear to contain CMakeLists.txt`？**
+
+A：检查文件名大小写，必须是 `CMakeLists.txt`（见注意事项第 2 条）。
+
+**Q：`CMake Error: Unknown CMake command "xxx"`？**
+
+A：函数名拼错了。`include_directiories`、`target_link_libraris` 这类拼写错误最常见。
+
+**Q：`CMakeCache.txt directory ... is different`？**
+
+A：你把别人的 `build/` 目录拷过来了，或者自己换过目录。删掉 `build/` 重新配置：`rm -rf build`。
+
+**Q：`expected ')' before 'name'` / `no declaration matches`？**
+
+A：头文件里的 `std::string` 漏了 `std::`（见注意事项第 9 条）。
+
+**Q：编译能过，但一运行就退出、窗口不弹？**
+
+A：99% 是图片/视频没找到。检查：文件提交了吗？相对路径的当前工作目录对吗？在 `imread` 后面加一句 `if (img.empty()) { cout << "读取失败\n"; return -1; }` 就能立刻看出来。
+
+**Q：`find_package(OpenCV)` 报 `Could NOT find OpenCV`？**
+
+A：OpenCV 没装或者 `OpenCV_DIR` 没配。Windows 上推荐按 <https://github.com/ZT-Visual-Group-Training/gugugaga> 里 README 的「免 VS 安装法」用 MSYS2 装（一条命令搞定 gcc + cmake + opencv）。
+
+**Q：视频处理时程序卡在第一帧？**
+
+A：循环里用了 `waitKey(0)`，改成 `waitKey(1)`。
+
 **Q：我的 fork 落后于原仓库怎么办？**
 
 A：在你 fork 的仓库页面点 **Sync fork** → **Update branch**，然后本地执行 `git pull`。
 
-**Q：我改了文件，但 PR 里没变化？**
-
-A：先确认 `git push` 成功了，再确认你改的是这个 PR 对应的分支。
-
 **Q：已经提过 PR 了还能改吗？**
 
-A：能。改完继续 `git commit` + `git push`，PR 会自动更新。
+A：能。改完继续 `git commit` + `git push`，PR 会自动更新，**不用重新提 PR**。
 
 **Q：能不能直接在网页上传文件？**
 
-A：可以（**Add file** → **Upload files**），但不推荐：容易漏文件，路径也容易建错。
+A：可以（**Add file** → **Upload files**），但不推荐：容易漏文件、路径也容易建错，尤其是多层目录。
 
 **Q：`git commit` 报 `Please tell me who you are`？**
 
@@ -132,6 +545,8 @@ git config --global user.email "你的邮箱"
 
 ---
 
-## 五、有问题
+## 七、有问题
 
 在群里问，或者在 PR / Issue 里留言。
+
+提交前请务必自己**重新 clone 一份**跑一遍——你能跑通，别人不一定能跑通。
